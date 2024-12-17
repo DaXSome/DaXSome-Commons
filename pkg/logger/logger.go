@@ -30,11 +30,12 @@ func NewLogger() *Logger {
 	today := time.Now().Format("2006-01-02")
 	logDir := filepath.Join("logs", today)
 
-	os.MkdirAll(logDir, 0655)
+	os.MkdirAll(logDir, 0755)
 
 	logger := &Logger{
-		logDir: logDir,
-		Logger: slog.New(),
+		logDir:   logDir,
+		Logger:   slog.New(),
+		handlers: make(map[string]slog.Handler),
 	}
 
 	logger.CreateFileHandler(Default)
