@@ -67,6 +67,7 @@ func (l *Logger) CreateFileHandler(logType string) error {
 
 func (l *Logger) Log(logType LogType, scope string, stmts ...interface{}) {
 	defer slog.Close()
+	defer l.ResetHandlers()
 
 	getLogLevel := func() slog.Level {
 		switch logType {
