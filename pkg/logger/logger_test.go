@@ -35,6 +35,8 @@ func TestLog(t *testing.T) {
 	scope := "TestScope"
 	message := "Test log message"
 
+	log.CreateFileHandler(logType)
+
 	log.Log(logType, scope, message)
 
 	logPath := filepath.Join(log.logDir, logType+".log")

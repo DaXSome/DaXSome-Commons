@@ -44,12 +44,12 @@ func NewLogger() *Logger {
 	return logger
 }
 
-func (l *Logger) CreateFileHandler(fileName string) error {
-	if _, ok := l.handlers[fileName]; ok {
-		return fmt.Errorf("%s already registered!", fileName)
+func (l *Logger) CreateFileHandler(logType string) error {
+	if _, ok := l.handlers[logType]; ok {
+		return fmt.Errorf("%s already registered!", logType)
 	}
 
-	logPath := filepath.Join(l.logDir, fmt.Sprintf("%s.log", fileName))
+	logPath := filepath.Join(l.logDir, fmt.Sprintf("%s.log", logType))
 	h, err := handler.NewFileHandler(logPath)
 	if err != nil {
 		log.Fatalf("Failed to create log file %s: %v", logPath, err)
@@ -60,9 +60,7 @@ func (l *Logger) CreateFileHandler(fileName string) error {
 
 	h.SetFormatter(fileFormatter)
 
-	l.AddHandler(h)
-
-	l.handlers[fileName] = h
+	l.handlers[logType] = h
 
 	return nil
 }
@@ -91,6 +89,10 @@ func (l *Logger) Log(logType LogType, scope string, stmts ...interface{}) {
 	consoleHandler.SetFormatter(consoleFormatter)
 
 	l.AddHandlers(consoleHandler)
+
+	if h, ok := l.handlers[logType]; ok {
+		l.AddHandlers(h)
+	}
 
 	l.WithFields(slog.M{
 		"scope": scope,
